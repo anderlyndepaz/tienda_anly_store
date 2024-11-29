@@ -1,4 +1,32 @@
 const Pedido = require('../models/Pedido');
+const Usuario = require('../models/Usuario');
+
+const crearPedido = async (req, res) => {
+  try {
+    console.log(req.body); // Depuración para verificar el contenido recibido
+    const { cantidad, cuenta_pagar, id_users } = req.body;
+
+    if (!cantidad || !cuenta_pagar || !id_users) {
+      return res.status(400).json({ error: 'Faltan datos requeridos: cantidad, cuenta_pagar o id_users' });
+    }
+
+    const usuario = await Usuario.findByPk(id_users);
+    if (!usuario) {
+      return res.status(404).json({ error: 'El usuario asociado no existe' });
+    }
+
+    const nuevoPedido = await Pedido.create({
+      cantidad,
+      cuenta_pagar,
+      id_users,
+    });
+
+    res.status(201).json({ message: 'Pedido creado correctamente', pedido: nuevoPedido });
+  } catch (error) {
+    res.status(500).json({ error: 'Error al crear el pedido', detalles: error.message });
+  }
+};
+
 
 const getPedidos = async (req, res) => {
   try {
@@ -74,4 +102,5 @@ module.exports = {
   getPedidoById,
   updatePedido,
   deletePedido,
+  crearPedido,
 };

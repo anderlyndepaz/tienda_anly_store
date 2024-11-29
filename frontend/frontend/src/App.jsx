@@ -1,21 +1,23 @@
-// import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './index.css'
+import Home from './components/pages/Home.jsx';
+import LoginPage from './components/pages/LoginPage.jsx';
+import RegistroPage from './components/pages/RegistroPage.jsx';
 // import { fetchExampleData } from '../services/api';
+// import Cesta from './components/pages/Cesta.jsx';
 
-// const App = () => {
-//   const [data, setData] = useState(null);
 
-//   useEffect(() => {
-//     fetchExampleData()
-//       .then((response) => setData(response))
-//       .catch((error) => console.error(error));
-//   }, []);
+const App = () => {
+    return (
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/registro" element={<RegistroPage />} />
+            <Route path="/login" element={<LoginPage />} />
+          </Routes>
+        </Router>
+      );
+};
 
-//   return (
-//     <div>
-//       <h1>Datos desde el backend</h1>
-//       <pre>{JSON.stringify(data, null, 2)}</pre>
-//     </div>
-//   );
-// };
-
-// export default App;
+export default App;

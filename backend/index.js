@@ -10,7 +10,7 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors'); //para aceptar todos los orgines. backend-front 
 const morgan = require('morgan');
 
-require('dotenv').config({ path: './env' });
+require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -18,6 +18,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+
 
 // Rutas
 app.use('/api/articulos', articulosRoutes); 
