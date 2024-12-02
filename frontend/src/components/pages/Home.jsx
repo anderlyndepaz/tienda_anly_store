@@ -57,14 +57,7 @@ const Home = () => {
     }
   };
 
-  // Añadir un artículo a la cesta
-  const handleAddToCesta = (articulo) => {
-    let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
-    cesta.push(articulo);
-    localStorage.setItem('cesta', JSON.stringify(cesta));
-    setCartCount(cesta.length); // Actualiza el contador en tiempo real
-    console.log('Artículo añadido a la cesta:', articulo);
-  };
+
 
   // Crear un pedido desde la cesta
   const addToCesta = async () => {
@@ -93,6 +86,15 @@ const Home = () => {
     }
   };
 
+    // Añadir un artículo a la cesta
+    const handleAddToCesta = (articulo) => {
+      let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
+      cesta.push(articulo);
+      localStorage.setItem('cesta', JSON.stringify(cesta));
+      setCartCount(cesta.length); // Actualiza el contador en tiempo real
+      console.log('Artículo añadido a la cesta:', articulo);
+    };
+
   return (
     <div className="home-container">
       <div className="auth-buttons">
@@ -114,7 +116,7 @@ const Home = () => {
           <button className="cart-button">Cesta ({cartCount})</button>
         </Link>
       </div>
-      <h1>Bienvenido a la página de inicio</h1>
+      <h1>Bienvenidos a tu tienda de confianza</h1>
       <h1 className="home-title">Lista de Artículos</h1>
       <div className="articulos-grid">
         {articulos.map((articulo) => (

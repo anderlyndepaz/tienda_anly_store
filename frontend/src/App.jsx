@@ -4,9 +4,9 @@ import Home from './components/pages/Home.jsx';
 import LoginPage from './components/pages/LoginPage.jsx';
 import RegistroPage from './components/pages/RegistroPage.jsx';
 import CestaPage from './components/pages/Cesta.jsx';
-import Footer from './components/Footer/Footer';
+import Footer from './components/Footer/Footer.jsx';
 import 'font-awesome/css/font-awesome.min.css';
-import Header from './components/Header/Header';
+import Header from './components/Header/Header.jsx';
 import '../styles/App.scss';
 
 const App = () => {

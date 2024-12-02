@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],//te permite trabajar con archivos jsx
+  root: './frontend',
   server: {
     proxy: {   //define reglas para redirigir solicitudes a otras direcciones
       '/api': {

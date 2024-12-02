@@ -5,25 +5,24 @@ const Usuario = require('../models/Usuario');
 
 const createPedido = async (req, res) => {
   try {
-    // Asegurarse de que el usuario está autenticado
     const userId = req.user?.id || req.userId;
     if (!userId) {
       return res.status(401).json({ error: 'Usuario no autenticado' });
     }
 
-    // Verificar que el usuario exista en la base de datos
+    // verificar que el usuario exista en la base de datos
     const usuario = await Usuario.findByPk(userId);
     if (!usuario) {
       return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
-    // Obtener los datos del pedido desde el body
+    // obtener los datos del pedido desde el body
     const { cantidad, cuenta_pagar } = req.body;
     if (!cantidad || !cuenta_pagar) {
       return res.status(400).json({ error: 'Cantidad y cuenta_pagar son obligatorios' });
     }
 
-    // Crear el pedido
+    // crear el pedido
     const nuevoPedido = await Pedido.create({
       cantidad,
       cuenta_pagar,

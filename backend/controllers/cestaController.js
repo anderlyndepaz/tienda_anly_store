@@ -4,22 +4,20 @@ const Pedido = require('../models/Pedido');
 
 const addArticuloToCesta = async (req, res) => {
   try {
-    const { id_articulos, cantidad } = req.body;  // Artículo que se va a agregar
-    const { id_pedido } = req.params;  // El id del pedido en el que se va a agregar el artículo
+    const { id_articulos, cantidad } = req.body;  
+    const { id_pedido } = req.params;  
 
-    // Verificar que el pedido existe
     const pedido = await Pedido.findByPk(id_pedido);
     if (!pedido) {
       return res.status(404).json({ error: 'Pedido no encontrado' });
     }
 
-    // Verificar que el artículo existe
     const articulo = await Articulo.findByPk(id_articulos);
     if (!articulo) {
       return res.status(404).json({ error: 'Artículo no encontrado' });
     }
 
-    // Crear el registro en la tabla Cesta
+    // crea el registro en la tabla Cesta
     const cesta = await Cesta.create({
       id_pedido,
       id_articulos,

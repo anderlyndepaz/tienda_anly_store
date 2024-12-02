@@ -7,7 +7,7 @@ const Footer = () => {
         <footer className="footer">
             <div className="footer-content">
                 <div className="footer-logo">
-                    <h1>Anly Store</h1>
+                    <h1 className='titulo1'>Anly Store</h1>
                     <p>La mejor tienda para tus compras online.</p>
                 </div>
 
