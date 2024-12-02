@@ -5,7 +5,7 @@ const Usuario = require('../models/Usuario');
 
 const createPedido = async (req, res) => {
   try {
-    const userId = req.user?.id || req.userId;
+    const userId = req.user?.id || req.userId; //para saber si hizo login
     if (!userId) {
       return res.status(401).json({ error: 'Usuario no autenticado' });
     }
