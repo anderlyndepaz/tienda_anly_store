@@ -66,28 +66,7 @@ const getPedidoById = async (req, res) => {
 };
 
 
-const updatePedido = async (req, res) => {
-  try {
-    const { id } = req.params; //valor id
-    const { cantidad, cuenta_pagar } = req.body; //valor de cantidad y cuenta :)
 
-    const pedido = await Pedido.findByPk(id);
-
-    if (!pedido) {
-      return res.status(404).json({ error: 'Pedido no encontrado' });
-    }
-
-    pedido.cantidad = cantidad ?? pedido.cantidad; //null, se mantiene 
-    pedido.cuenta_pagar = cuenta_pagar ?? pedido.cuenta_pagar; //lo mismo
-
-    await pedido.save(); //metodo sequelize para guardar 
-
-    res.status(200).json(pedido);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al actualizar el pedido' });
-  }
-};
 
 const deletePedido = async (req, res) => {
   try {
@@ -111,7 +90,6 @@ const deletePedido = async (req, res) => {
 module.exports = {
   getPedidos,
   getPedidoById,
-  updatePedido,
   deletePedido,
   createPedido
 };

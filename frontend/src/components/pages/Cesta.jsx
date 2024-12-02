@@ -2,12 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../../styles/Cesta.scss';
 
-const Cesta = () => {
+const Cesta = ({ setTotal, setCantidad, total, cantidad }) => {
   const [cesta, setCesta] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [cantidad, setCantidad] = useState(0);
 
- 
   useEffect(() => {
     const articulosEnCesta = JSON.parse(localStorage.getItem('cesta')) || [];
     setCesta(articulosEnCesta);
@@ -20,15 +17,14 @@ const Cesta = () => {
     localStorage.setItem('cesta', JSON.stringify(nuevaCesta));
     calcularTotalYCantidad(nuevaCesta);
   };
-  
+
   const calcularTotalYCantidad = (articulos) => {
     const totalPagar = articulos.reduce((acc, articulo) => acc + articulo.precio, 0);
     const cantidadArticulos = articulos.length;
-  
-    setTotal(totalPagar.toFixed(2)); 
-    setCantidad(cantidadArticulos);
+
+    setTotal(totalPagar.toFixed(2));  // Actualiza el estado global
+    setCantidad(cantidadArticulos);   // Actualiza el estado global
   };
-  
 
   return (
     <div className="cesta-container">
