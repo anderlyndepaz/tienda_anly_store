@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const Articulo = sequelize.define('Articulo', {
+const Articulo = sequelize.define('articulo', {
   id_articulos: { 
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -25,9 +25,8 @@ const Articulo = sequelize.define('Articulo', {
     type: DataTypes.STRING,
   },
 }, {
-  tableName: 'articulos', // Nombre de la tabla en la base de datos
-  timestamps: false, // Desactiva los campos createdAt y updatedAt
+  tableName: 'articulos', 
+  timestamps: false, 
 });
 
 module.exports = Articulo;
-
