@@ -5,13 +5,15 @@ const {
   getPedidoById,
   updatePedido,
   deletePedido,
-  crearPedido,
+  createPedido,
 } = require('../controllers/pedidosController');
+const authenticateToken = require('../middlewares/authMiddleware');
 
-router.post('/', crearPedido);
+
 router.get('/', getPedidos);
 router.get('/:id', getPedidoById);
 router.put('/:id', updatePedido);
 router.delete('/:id', deletePedido);
+router.post('/create', authenticateToken, createPedido);
 
 module.exports = router; 

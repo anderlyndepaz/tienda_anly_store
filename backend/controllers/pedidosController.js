@@ -1,32 +1,44 @@
 const Pedido = require('../models/Pedido');
 const Usuario = require('../models/Usuario');
 
-const crearPedido = async (req, res) => {
+
+
+const createPedido = async (req, res) => {
   try {
-    console.log(req.body); // Depuración para verificar el contenido recibido
-    const { cantidad, cuenta_pagar, id_users } = req.body;
-
-    if (!cantidad || !cuenta_pagar || !id_users) {
-      return res.status(400).json({ error: 'Faltan datos requeridos: cantidad, cuenta_pagar o id_users' });
+    // Asegurarse de que el usuario está autenticado
+    const userId = req.user?.id || req.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuario no autenticado' });
     }
 
-    const usuario = await Usuario.findByPk(id_users);
+    // Verificar que el usuario exista en la base de datos
+    const usuario = await Usuario.findByPk(userId);
     if (!usuario) {
-      return res.status(404).json({ error: 'El usuario asociado no existe' });
+      return res.status(404).json({ error: 'Usuario no encontrado' });
     }
 
+    // Obtener los datos del pedido desde el body
+    const { cantidad, cuenta_pagar } = req.body;
+    if (!cantidad || !cuenta_pagar) {
+      return res.status(400).json({ error: 'Cantidad y cuenta_pagar son obligatorios' });
+    }
+
+    // Crear el pedido
     const nuevoPedido = await Pedido.create({
       cantidad,
       cuenta_pagar,
-      id_users,
+      id_users: userId, // Asociar el pedido al usuario autenticado
     });
 
-    res.status(201).json({ message: 'Pedido creado correctamente', pedido: nuevoPedido });
+    res.status(201).json({
+      message: 'Pedido creado exitosamente',
+      pedido: nuevoPedido,
+    });
   } catch (error) {
-    res.status(500).json({ error: 'Error al crear el pedido', detalles: error.message });
+    console.error('Error al crear el pedido:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
-
 
 const getPedidos = async (req, res) => {
   try {
@@ -102,5 +114,5 @@ module.exports = {
   getPedidoById,
   updatePedido,
   deletePedido,
-  crearPedido,
+  createPedido
 };

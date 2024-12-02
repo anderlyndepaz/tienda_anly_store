@@ -1,0 +1,115 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Fondo y color general de la página */
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Centrando el contenido */
+  .main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+  }
+  
+  /* Estilo para el contenedor principal de la aplicación */
+  .container {
+    width: 100%;
+    max-width: 1200px; /* Máximo ancho de la página */
+    padding: 20px;
+  }
+  
+  /* Cabecera general */
+  header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  /* Estilo para los enlaces de navegación */
+  nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    display: inline-block;
+    margin: 0 10px;
+    background-color: #555;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  nav a:hover {
+    background-color: #777;
+  }
+  
+  /* Estilos globales para botones */
+  button {
+    padding: 12px 20px;
+    font-size: 1rem;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #555;
+  }
+  
+  /* Estilo de enlaces para el footer */
+  footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  footer a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 1.2rem;
+  }
+  
+  footer a:hover {
+    color: #1da1f2;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .container {
+      padding: 15px;
+    }
+  
+    header h1 {
+      font-size: 1.5rem;
+    }
+  
+    nav a {
+      padding: 8px 15px;
+    }
+  
+    button {
+      width: 100%;
+      font-size: 1rem;
+    }
+  }

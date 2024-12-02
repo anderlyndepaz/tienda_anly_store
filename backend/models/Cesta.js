@@ -14,7 +14,7 @@ const Cesta = sequelize.define('cesta', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Pedido', 
+      model: Pedido, 
       key: 'id_pedido',
     },
     onDelete: 'CASCADE',
@@ -23,7 +23,7 @@ const Cesta = sequelize.define('cesta', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Articulos', 
+      model: Articulo, 
       key: 'id_articulos',
     },
     onDelete: 'CASCADE',

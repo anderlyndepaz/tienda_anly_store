@@ -1,51 +1,74 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import '../../../styles/Cesta.scss';
 
-const CestaPage = () => {
+const Cesta = () => {
   const [cesta, setCesta] = useState([]);
-  const [pedido, setPedido] = useState(null);
-  
-  const id_usuario = 1; 
+  const [total, setTotal] = useState(0);
+  const [cantidad, setCantidad] = useState(0);
 
+ 
   useEffect(() => {
-    // Obtener los artículos en la cesta y el pedido
-    const fetchCestaAndPedido = async () => {
-      try {
-        const response = await axios.get(`/api/cesta/${id_usuario}`);
-        setCesta(response.data);
-        
-        // Suponiendo que también tienes un endpoint para obtener el último pedido
-        const pedidoResponse = await axios.get(`/api/pedido/${id_usuario}`);
-        setPedido(pedidoResponse.data);
-      } catch (error) {
-        console.error('Error al cargar la cesta y el pedido:', error);
-      }
-    };
+    const articulosEnCesta = JSON.parse(localStorage.getItem('cesta')) || [];
+    setCesta(articulosEnCesta);
+    calcularTotalYCantidad(articulosEnCesta);
+  }, []);
 
-    fetchCestaAndPedido();
-  }, [id_usuario]);
+  const eliminarArticulo = (idArticulo) => {
+    const nuevaCesta = cesta.filter((articulo) => articulo.id_articulos !== idArticulo);
+    setCesta(nuevaCesta);
+    localStorage.setItem('cesta', JSON.stringify(nuevaCesta));
+    calcularTotalYCantidad(nuevaCesta);
+  };
+  
+  const calcularTotalYCantidad = (articulos) => {
+    const totalPagar = articulos.reduce((acc, articulo) => acc + articulo.precio, 0);
+    const cantidadArticulos = articulos.length;
+  
+    setTotal(totalPagar.toFixed(2)); 
+    setCantidad(cantidadArticulos);
+  };
+  
 
   return (
-    <div>
-      <h1>Mi Cesta</h1>
-      <div>
-        {cesta.map((item) => (
-          <div key={item.id_articulos}>
-            <p>{item.articulo.nombre} - ${item.articulo.precio}</p>
-          </div>
-        ))}
+    <div className="cesta-container">
+      <div className="cesta-header">
+        <h1>Mi Cesta</h1>
+        <Link to="/">
+          <button className="continue-shopping-button">Seguir comprando</button>
+        </Link>
       </div>
 
-      {pedido && (
-        <div>
-          <h2>Pedido</h2>
-          <p>Cantidad de artículos: {pedido.cantidad}</p>
-          <p>Total a pagar: ${pedido.cantidad_pagar}</p>
-          <p>Fecha del pedido: {new Date(pedido.fecha_pedido).toLocaleDateString()}</p>
+      {cesta.length === 0 ? (
+        <p>No tienes artículos en la cesta.</p>
+      ) : (
+        <div className="cesta-items">
+          {cesta.map((articulo) => (
+            <div key={articulo.id_articulos} className="cesta-item">
+              <img src={articulo.imagen} alt={articulo.nombre} className="cesta-item-image" />
+              <div className="cesta-item-details">
+                <h2>{articulo.nombre}</h2>
+                <p>Precio: ${articulo.precio}</p>
+                <button onClick={() => eliminarArticulo(articulo.id_articulos)} className="remove-item-button">
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {cesta.length > 0 && (
+        <div className="cesta-summary">
+          <h3>Total a pagar: ${total}</h3>
+          <h3>Cantidad de artículos: {cantidad}</h3>
+          <Link to="/checkout">
+            <button className="checkout-button">Proceder al pago</button>
+          </Link>
         </div>
       )}
     </div>
   );
 };
 
-export default CestaPage;
+export default Cesta;

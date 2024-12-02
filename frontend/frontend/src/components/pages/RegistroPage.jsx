@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../../styles/Registro.scss'
 
 const RegistroPage = () => {
     const [nombre, setNombre] = useState('');
@@ -9,12 +10,12 @@ const RegistroPage = () => {
     const [numero_telefono, setNumeroTelefono] = useState('');
     const [contraseña, setContraseña] = useState('');
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Para redirigir al usuario
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validar los campos
+      
         if (!nombre || !apellido || !correo_electronico || !direccion || !numero_telefono || !contraseña) {
             setError('Por favor, completa todos los campos.');
             return;
@@ -40,10 +41,9 @@ const RegistroPage = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Redirigir a la página de login después de un registro exitoso
+              
                 navigate('/login');
             } else {
-                // Si hay un error (por ejemplo, usuario ya existe)
                 setError(data.message || 'Hubo un error al registrar el usuario.');
             }
         } catch (err) {

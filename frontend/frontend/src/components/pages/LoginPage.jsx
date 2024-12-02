@@ -1,34 +1,37 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom'; // Para redirigir al Home
+import { useNavigate, Link } from 'react-router-dom'; 
+import '../../../styles/Login.scss';
+
+axios.defaults.withCredentials = true;
 
 const LoginPage = () => {
     const [correo, setCorreo] = useState('');
     const [contraseña, setContraseña] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Para redirigir a la página de inicio
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        // Validar campos
+    
         if (!correo || !contraseña) {
             setError('Por favor, completa todos los campos.');
             return;
         }
-
+    
         try {
             const response = await axios.post('http://localhost:3000/auth/login', {
                 correo_electronico: correo,
                 contraseña,
             });
-
-            // Si el login es exitoso, guarda el token y redirige al Home
-            if (response.data?.token) {
-                localStorage.setItem('token', response.data.token);
-                navigate('/'); // Cambia la redirección a la ruta raíz
+    
+            // Guardar el token en localStorage
+            const token = response.data.token;
+            if (token) {
+                localStorage.setItem('token', token);
+                navigate('/'); // Navegar al home
             } else {
-                throw new Error('Token no recibido.'); // Maneja el caso de respuesta incorrecta
+                throw new Error('Token no recibido.');
             }
         } catch (err) {
             if (err.response && err.response.status === 401) {
@@ -38,6 +41,7 @@ const LoginPage = () => {
             }
         }
     };
+    
 
     return (
         <div className="login-container">

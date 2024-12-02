@@ -1,103 +1,40 @@
 const Cesta = require('../models/Cesta');
 const Articulo = require('../models/Articulo'); 
 const Pedido = require('../models/Pedido');
-const Usuario = require('../models/Usuario');
 
-
-// POST: Crear un nuevo pedido y generar la cesta
-const pagar = async (req, res) => {
+const addArticuloToCesta = async (req, res) => {
   try {
-    const { id_usuario } = req.body;  // ID del usuario que está pagando
+    const { id_articulos, cantidad } = req.body;  // Artículo que se va a agregar
+    const { id_pedido } = req.params;  // El id del pedido en el que se va a agregar el artículo
 
-    if (!id_usuario) {
-      return res.status(400).json({ error: 'Falta el id_usuario' });
-    }
-
-    // 1. Obtenemos todos los artículos en la cesta del usuario
-    const cestaArticulos = await Cesta.findAll({
-      where: { id_usuario },
-      include: {
-        model: Articulo,
-        attributes: ['id_articulos', 'nombre', 'precio'],
-      },
-    });
-
-    if (cestaArticulos.length === 0) {
-      return res.status(404).json({ error: 'No hay artículos en la cesta para pagar' });
-    }
-
-    // 2. Calculamos la cantidad de artículos y el total a pagar
-    const cantidad = cestaArticulos.length;
-    const cantidadPagar = cestaArticulos.reduce((total, item) => total + item.articulo.precio, 0);
-
-    // 3. Creamos el nuevo pedido
-    const nuevoPedido = await Pedido.create({
-      id_usuario,
-      cantidad,
-      cantidad_pagar: cantidadPagar,
-      fecha_pedido: new Date(),
-    });
-
-    // 4. Creamos los registros correspondientes en la tabla Cesta
-    // Para cada artículo en la cesta, asociamos el nuevo pedido
-    for (let item of cestaArticulos) {
-      await Cesta.create({
-        id_articulos: item.articulo.id_articulos,
-        id_pedido: nuevoPedido.id_pedido, // Relacionamos el artículo con el nuevo pedido
-      });
-    }
-
-    // 5. Eliminamos los artículos de la cesta después del pago
-    await Cesta.destroy({ where: { id_usuario } });
-
-    res.status(201).json({
-      message: 'Pedido creado y cesta generada correctamente',
-      pedido: nuevoPedido,
-      cantidad,
-      cantidad_pagar,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      error: 'Error al procesar el pedido',
-      detalles: error.message,
-    });
-  }
-};
-
-
-const postCesta = async (req, res) => {
-  try {
-    const { id_pedido, id_articulos } = req.body;
-    if (!id_pedido || !id_articulos) {
-      return res.status(400).json({ error: 'Faltan datos requeridos: id_pedido o id_articulos' });
-    }
+    // Verificar que el pedido existe
     const pedido = await Pedido.findByPk(id_pedido);
     if (!pedido) {
-      return res.status(404).json({ error: 'El pedido asociado no existe' });
+      return res.status(404).json({ error: 'Pedido no encontrado' });
     }
+
+    // Verificar que el artículo existe
     const articulo = await Articulo.findByPk(id_articulos);
     if (!articulo) {
-      return res.status(404).json({ error: 'El artículo asociado no existe' });
+      return res.status(404).json({ error: 'Artículo no encontrado' });
     }
-    const nuevoCesta = await Cesta.create({
+
+    // Crear el registro en la tabla Cesta
+    const cesta = await Cesta.create({
       id_pedido,
       id_articulos,
+      cantidad,
     });
 
-    res.status(201).json({
-      message: 'Artículo añadido a la cesta correctamente',
-      cesta: nuevoCesta,
+    res.status(200).json({
+      message: 'Artículo añadido a la cesta',
+      cesta,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
-      error: 'Error al añadir el artículo a la cesta',
-      detalles: error.message,
-    });
+    res.status(500).json({ error: 'Error al añadir el artículo a la cesta' });
   }
 };
-
 
 
 const getCesta = async (req, res) => {
@@ -142,4 +79,4 @@ const deleteAllCesta = async (req, res) => {
   }
 };
 
-module.exports = { getCesta, deleteArticuloCesta, deleteAllCesta, postCesta, pagar };
+module.exports = { getCesta, deleteArticuloCesta, deleteAllCesta, addArticuloToCesta };
