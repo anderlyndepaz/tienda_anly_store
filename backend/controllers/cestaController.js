@@ -67,14 +67,5 @@ const deleteArticuloCesta = async (req, res) => {
 };
 
 
-const deleteAllCesta = async (req, res) => {
-  try {
-    await Cesta.destroy({ where: {} }); 
-    res.status(200).json({ message: 'Todos los artículos de la cesta han sido eliminados' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al eliminar todos los artículos de la cesta' });
-  }
-};
 
-module.exports = { getCesta, deleteArticuloCesta, deleteAllCesta, addArticuloToCesta };
+module.exports = { getCesta, deleteArticuloCesta, addArticuloToCesta };
