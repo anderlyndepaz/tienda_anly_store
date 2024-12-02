@@ -25,7 +25,11 @@ app.use(morgan('dev'));
 
 // Rutas
 app.use('/api/articulos', articulosRoutes); 
-app.use('/api/pedidos', pedidoRoutes);
+app.post('/api/pedidos', (req, res) => {
+  const pedido = req.body; 
+  console.log(pedido); 
+  res.status(201).send('Pedido creado');
+});
 app.use('/api/cesta', cestaRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/favoritos', favoritosRoutes);

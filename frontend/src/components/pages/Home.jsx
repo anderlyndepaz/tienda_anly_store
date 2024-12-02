@@ -5,20 +5,25 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const [articulos, setArticulos] = useState([]);
-  const [user, setUser] = useState(null);
-  const [cartCount, setCartCount] = useState(0); 
+  const [articulos, setArticulos] = useState([]); // para almacenar los artículos de la API
+  const [user, setUser] = useState(null); // información del usuario logeado
+  const [cartCount, setCartCount] = useState(0); // conteo de artículos en la cesta
+  const [searchTerm, setSearchTerm] = useState(''); // estado para el término de búsqueda
 
-  // Cargar datos del usuario al iniciar
+  // cargar datos del usuario, para el token
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token'); // obtener token
     if (token) {
       axios
         .get('http://localhost:3000/api/usuarios', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((response) => {
-          setUser({ id: response.data.id, nombre: response.data.nombre, rol: 'usuario' });
+          const usuario = { id: response.data.id, nombre: response.data.nombre, rol: 'usuario' };
+          setUser(usuario); // actualizamos el estado del usuario
+
+          // Crear el pedido para el usuario autenticado
+          createPedido(usuario.id, token);
         })
         .catch((err) => {
           console.error('Error al obtener datos del usuario:', err);
@@ -26,12 +31,33 @@ const Home = () => {
     }
   }, []);
 
-  // Cargar artículos y sincronizar la cesta al montar el componente
+  // Crear pedido para el usuario autenticado
+  const createPedido = async (userId, token) => {
+    try {
+      const response = await axios.post(
+        'http://localhost:3000/api/pedidos', // URL del endpoint de createPedido
+        {
+          cantidad: 1, // puedes ajustar esta cantidad o calcularla dinámicamente
+          cuenta_pagar: 100, // ajusta el valor o cámbialo según tu lógica
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // enviar el token para autenticación
+          },
+        }
+      );
+      console.log('Pedido creado exitosamente:', response.data);
+    } catch (error) {
+      console.error('Error al crear el pedido:', error);
+    }
+  };
+
+  // cargar artículos y sincronizar la cesta al montar el componente
   useEffect(() => {
     const fetchArticulos = async () => {
       try {
         const data = await getArticulos();
-        setArticulos(data);
+        setArticulos(data); //actualiza estado con datos
       } catch (error) {
         console.error('Error al cargar los artículos:', error);
       }
@@ -39,17 +65,16 @@ const Home = () => {
 
     fetchArticulos();
 
-    // Sincronizar el contador de la cesta desde localStorage
+    // sincronizar el contador de la cesta desde localStorage
     const cesta = JSON.parse(localStorage.getItem('cesta')) || [];
     setCartCount(cesta.length);
   }, []);
 
-  // Función para cerrar sesión
   const handleLogout = async () => {
     try {
       await axios.get('http://localhost:3000/auth/logout');
       localStorage.removeItem('token');
-      setUser(null);
+      setUser(null); //act a null - ya no esta autenticado
       alert('Sesión cerrada correctamente');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
@@ -57,43 +82,21 @@ const Home = () => {
     }
   };
 
-
-
-  // Crear un pedido desde la cesta
-  const addToCesta = async () => {
-    try {
-      const articulosEnCesta = JSON.parse(localStorage.getItem('cesta')) || [];
-      if (articulosEnCesta.length === 0) {
-        throw new Error('No hay artículos en la cesta');
-      }
-
-      const cuenta_pagar = articulosEnCesta.reduce((total, articulo) => total + articulo.precio, 0);
-      const cantidad = articulosEnCesta.length;
-
-      console.log('Cantidad:', cantidad);
-      console.log('Cuenta a pagar:', cuenta_pagar);
-
-      const response = await axios.post(
-        'http://localhost:3000/api/pedidos/create',
-        { cantidad, cuenta_pagar },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-        }
-      );
-      console.log('Pedido añadido correctamente:', response.data);
-    } catch (error) {
-      console.error('Error al añadir el pedido:', error.message);
-    }
+  const handleAddToCesta = (articulo) => {
+    let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
+    cesta.push(articulo);
+    localStorage.setItem('cesta', JSON.stringify(cesta));
+    setCartCount(cesta.length); // actualiza el contador en tiempo real
+    console.log('Artículo añadido a la cesta:', articulo);
   };
 
-    // Añadir un artículo a la cesta
-    const handleAddToCesta = (articulo) => {
-      let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
-      cesta.push(articulo);
-      localStorage.setItem('cesta', JSON.stringify(cesta));
-      setCartCount(cesta.length); // Actualiza el contador en tiempo real
-      console.log('Artículo añadido a la cesta:', articulo);
-    };
+  // Filtrar los artículos según el término de búsqueda
+  const filteredArticulos = articulos.filter((articulo) => {
+    return (
+      articulo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      articulo.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   return (
     <div className="home-container">
@@ -116,31 +119,189 @@ const Home = () => {
           <button className="cart-button">Cesta ({cartCount})</button>
         </Link>
       </div>
+
       <h1>Bienvenidos a tu tienda de confianza</h1>
       <h1 className="home-title">Lista de Artículos</h1>
+      <div className="contenedor-input">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Buscar por nombre o categoría"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)} // actualiza el término de búsqueda
+        />
+      </div>
+
       <div className="articulos-grid">
-        {articulos.map((articulo) => (
-          <div key={articulo.id_articulos} className="articulo-card">
-            <img
-              src={articulo.imagen}
-              alt={articulo.nombre}
-              className="articulo-image"
-            />
-            <h2 className="articulo-name">{articulo.nombre}</h2>
-            <p className="articulo-category">Categoría: {articulo.categoria}</p>
-            <p className="articulo-price">Precio: ${articulo.precio}</p>
-            <p className="articulo-description">{articulo.descripcion}</p>
-            <button
-              onClick={() => handleAddToCesta(articulo)}
-              className="add-to-cart-button"
-            >
-              Añadir a la cesta
-            </button>
-          </div>
-        ))}
+        {filteredArticulos.length > 0 ? (
+          filteredArticulos.map((articulo) => (
+            <div key={articulo.id_articulos} className="articulo-card">
+              <img
+                src={articulo.imagen}
+                alt={articulo.nombre}
+                className="articulo-image"
+              />
+              <h2 className="articulo-name">{articulo.nombre}</h2>
+              <p className="articulo-category">Categoría: {articulo.categoria}</p>
+              <p className="articulo-price">Precio: ${articulo.precio}</p>
+              <p className="articulo-description">{articulo.descripcion}</p>
+              <button
+                onClick={() => handleAddToCesta(articulo)}
+                className="add-to-cart-button"
+              >
+                Añadir a la cesta
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>No se encontraron artículos</p>
+        )}
       </div>
     </div>
   );
 };
 
 export default Home;
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import { getArticulos } from '../../../services/api';
+// import '../../../styles/Home.scss';
+// import axios from 'axios';
+// import { Link } from 'react-router-dom';
+
+// const Home = () => {
+//   const [articulos, setArticulos] = useState([]); // para almacenar los artículos de la API
+//   const [user, setUser] = useState(null); // información del usuario logeado
+//   const [cartCount, setCartCount] = useState(0); // conteo de artículos en la cesta
+//   const [searchTerm, setSearchTerm] = useState(''); // estado para el término de búsqueda
+
+//   // cargar datos del usuario, para el token
+//   useEffect(() => {
+//     const token = localStorage.getItem('token'); // obtener token
+//     if (token) {
+//       axios
+//         .get('http://localhost:3000/api/usuarios', { // solo para obtener información
+//           headers: { Authorization: `Bearer ${token}` },
+//         })
+//         .then((response) => {
+//           setUser({ id: response.data.id, nombre: response.data.nombre, rol: 'usuario' }); // si todo sale ok, se guarda en user
+//         })
+//         .catch((err) => {
+//           console.error('Error al obtener datos del usuario:', err);
+//         });
+//     }
+//   }, []);
+
+//   // cargar artículos y sincronizar la cesta al montar el componente
+//   useEffect(() => {
+//     const fetchArticulos = async () => {
+//       try {
+//         const data = await getArticulos();
+//         setArticulos(data); //actualiza estado con datos
+//       } catch (error) {
+//         console.error('Error al cargar los artículos:', error);
+//       }
+//     };
+
+//     fetchArticulos();
+
+//     // sincronizar el contador de la cesta desde localStorage
+//     const cesta = JSON.parse(localStorage.getItem('cesta')) || [];
+//     setCartCount(cesta.length);
+//   }, []);
+
+//   const handleLogout = async () => {
+//     try {
+//       await axios.get('http://localhost:3000/auth/logout');
+//       localStorage.removeItem('token');
+//       setUser(null); //act a null - ya no esta autenticado
+//       alert('Sesión cerrada correctamente');
+//     } catch (error) {
+//       console.error('Error al cerrar sesión:', error);
+//       alert('Hubo un error al cerrar sesión');
+//     }
+//   };
+
+//   const handleAddToCesta = (articulo) => {
+//     let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
+//     cesta.push(articulo);
+//     localStorage.setItem('cesta', JSON.stringify(cesta));
+//     setCartCount(cesta.length); // actualiza el contador en tiempo real
+//     console.log('Artículo añadido a la cesta:', articulo);
+//   };
+
+//   // Filtrar los artículos según el término de búsqueda
+//   const filteredArticulos = articulos.filter((articulo) => {
+//     return (
+//       articulo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//       articulo.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+//     );
+//   });
+
+//   return (
+//     <div className="home-container">
+//       <div className="auth-buttons">
+//         {user ? (
+//           <button onClick={handleLogout} className="logout-button">
+//             Cerrar sesión
+//           </button>
+//         ) : (
+//           <>
+//             <Link to="/login">
+//               <button className="login-button">Iniciar sesión</button>
+//             </Link>
+//             <Link to="/registro">
+//               <button className="register-button">Registrarse</button>
+//             </Link>
+//           </>
+//         )}
+//         <Link to="/cesta">
+//           <button className="cart-button">Cesta ({cartCount})</button>
+//         </Link>
+//       </div>
+
+//       <h1>Bienvenidos a tu tienda de confianza</h1>
+//       <h1 className="home-title">Lista de Artículos</h1>
+//       <div className='contenedor-input'>
+//       <input
+//         type="text"
+//         className="search-input"
+//         placeholder="Buscar por nombre o categoría"
+//         value={searchTerm}
+//         onChange={(e) => setSearchTerm(e.target.value)} // actualiza el término de búsqueda
+//       />
+//       </div>
+
+//       <div className="articulos-grid">
+//         {filteredArticulos.length > 0 ? (
+//           filteredArticulos.map((articulo) => (
+//             <div key={articulo.id_articulos} className="articulo-card">
+//               <img
+//                 src={articulo.imagen}
+//                 alt={articulo.nombre}
+//                 className="articulo-image"
+//               />
+//               <h2 className="articulo-name">{articulo.nombre}</h2>
+//               <p className="articulo-category">Categoría: {articulo.categoria}</p>
+//               <p className="articulo-price">Precio: ${articulo.precio}</p>
+//               <p className="articulo-description">{articulo.descripcion}</p>
+//               <button
+//                 onClick={() => handleAddToCesta(articulo)}
+//                 className="add-to-cart-button"
+//               >
+//                 Añadir a la cesta
+//               </button>
+//             </div>
+//           ))
+//         ) : (
+//           <p>No se encontraron artículos</p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Home;
