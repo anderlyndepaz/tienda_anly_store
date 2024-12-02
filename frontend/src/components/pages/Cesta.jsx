@@ -2,29 +2,33 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../../../styles/Cesta.scss';
 
-const Cesta = ({ setTotal, setCantidad, total, cantidad }) => {
+const Cesta = () => {
   const [cesta, setCesta] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [cantidad, setCantidad] = useState(0);
 
+ 
   useEffect(() => {
-    const articulosEnCesta = JSON.parse(localStorage.getItem('cesta')) || [];
-    setCesta(articulosEnCesta);
-    calcularTotalYCantidad(articulosEnCesta);
+    const articulosEnCesta = JSON.parse(localStorage.getItem('cesta')) || []; //obtener datos o asignar array vacio
+    setCesta(articulosEnCesta); //actualizamos con los datos
+    calcularTotalYCantidad(articulosEnCesta); 
   }, []);
 
   const eliminarArticulo = (idArticulo) => {
-    const nuevaCesta = cesta.filter((articulo) => articulo.id_articulos !== idArticulo);
-    setCesta(nuevaCesta);
-    localStorage.setItem('cesta', JSON.stringify(nuevaCesta));
-    calcularTotalYCantidad(nuevaCesta);
+    const nuevaCesta = cesta.filter((articulo) => articulo.id_articulos !== idArticulo);  //filtramos para identicar por id el articulo
+    setCesta(nuevaCesta); //act la cesta
+    localStorage.setItem('cesta', JSON.stringify(nuevaCesta)); //guardar en local
+    calcularTotalYCantidad(nuevaCesta); //volver a calcular
   };
-
+  
   const calcularTotalYCantidad = (articulos) => {
-    const totalPagar = articulos.reduce((acc, articulo) => acc + articulo.precio, 0);
-    const cantidadArticulos = articulos.length;
-
-    setTotal(totalPagar.toFixed(2));  // Actualiza el estado global
-    setCantidad(cantidadArticulos);   // Actualiza el estado global
+    const totalPagar = articulos.reduce((acc, articulo) => acc + articulo.precio, 0); //comienza en 0 y se suma el acumulador con art.precio
+    const cantidadArticulos = articulos.length; 
+  
+    setTotal(totalPagar.toFixed(2)); //act el estado solo con dos decimales
+    setCantidad(cantidadArticulos); //act el estado
   };
+  
 
   return (
     <div className="cesta-container">
