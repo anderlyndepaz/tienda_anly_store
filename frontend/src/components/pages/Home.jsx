@@ -4,7 +4,7 @@ import '../../../styles/Home.scss';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-const Home = ({ total, cantidad }) => {
+const Home = () => {
   const [articulos, setArticulos] = useState([]); // para almacenar los artículos de la API
   const [user, setUser] = useState(null); // información del usuario logeado
   const [cartCount, setCartCount] = useState(0); // conteo de artículos en la cesta
@@ -22,7 +22,7 @@ const Home = ({ total, cantidad }) => {
           const usuario = { id: response.data.id, nombre: response.data.nombre, rol: 'usuario' };
           setUser(usuario); // actualizamos el estado del usuario
 
-          // Crear el pedido para el usuario autenticado
+          // crear el pedido para el usuario autenticado
           createPedido(usuario.id, token);
         })
         .catch((err) => {
@@ -31,18 +31,18 @@ const Home = ({ total, cantidad }) => {
     }
   }, []);
 
-  // para crear pedido para el usuario autenticado
+  // enviamos los datos para crear el pedido
   const createPedido = async (userId, token) => {
     try {
       const response = await axios.post(
         'http://localhost:3000/api/pedidos',
         {
-          cantidad: cantidad,
-          cuenta_pagar: total,
+          cantidad: 1, 
+          cuenta_pagar: 100,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // enviar el token para autenticación
           },
         }
       );
@@ -83,12 +83,10 @@ const Home = ({ total, cantidad }) => {
   };
 
   const handleAddToCesta = (articulo) => {
-    if (!user) {
-      // Si no hay usuario logeado, muestra un mensaje o redirige al login
-      alert('Por favor, inicia sesión para añadir productos a la cesta.');
-      return; // Detiene la ejecución de la función si el usuario no está logeado
+    if(!user) {
+      alert('Por favor, inicia sesion para añadir articulos')
+      return;
     }
-  
     let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
     cesta.push(articulo);
     localStorage.setItem('cesta', JSON.stringify(cesta));
