@@ -8,16 +8,19 @@ import Footer from './components/Footer/Footer.jsx';
 import 'font-awesome/css/font-awesome.min.css';
 import Header from './components/Header/Header.jsx';
 import '../styles/App.scss';
+import { useState } from 'react';
 
 const App = () => {
+  const [total, setTotal] = useState(0);
+  const [cantidad, setCantidad] = useState(0);
     return (
         <Router>
              <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home  total={total} cantidad={cantidad}/>} />
             <Route path="/registro" element={<RegistroPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/cesta" element={<CestaPage />} />
+            <Route path="/cesta" element={<CestaPage setTotal={setTotal} setCantidad={setCantidad}/>} />
           </Routes>
           <Footer />
         </Router>

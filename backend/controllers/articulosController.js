@@ -9,12 +9,14 @@ const getArticulos = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener artículos' });
   }
 };
+
+
 const createArticulo = async (req, res) => {
   try {
     console.log(req.body); 
 
-    const { nombre, categoria, precio, descripcion, imagen } = req.body;
-    if (!nombre || !precio) {
+    const { nombre, categoria, precio, descripcion, imagen } = req.body; //ante la duda, destructuring
+    if (!nombre || !precio) { //comprueba que hay datos
       return res.status(400).json({ error: 'El nombre y el precio son obligatorios.' });
     }
 
@@ -24,7 +26,7 @@ const createArticulo = async (req, res) => {
       precio,
       descripcion,
       imagen,
-    });
+    }); //creamos el modelito
 
     res.status(201).json(nuevoArticulo);
   } catch (error) {
@@ -38,7 +40,7 @@ const deleteArticulo = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const articulo = await Articulo.findByPk(id);
+    const articulo = await Articulo.findByPk(id); //buscamos pk, gracias sequelize
     if (!articulo) {
       return res.status(404).json({ error: 'Artículo no encontrado.' });
     }
