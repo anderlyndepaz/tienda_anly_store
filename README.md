@@ -1,7 +1,7 @@
 # 🛍️ Tienda de Ropa Online 👚👕
 
 ## Descripción
-Bienvenido a nuestra **Tienda de Ropa Online**, donde podrás navegar por una gran variedad de productos, realizar pedidos y añadir productos al carrito o cesta. Esta aplicación web te permite buscar diferentes categorías de ropa y realizar compras de manera eficiente.
+Bienvenido a nuestra **Tienda de Ropa Online**, donde podrás navegar por una gran variedad de productos, realizar pedidos y añadir productos al carrito o cesta. Esta aplicación web te permite buscar diferentes categorías de ropa y elegir articulos de manera eficiente.
 
 ## Funcionalidades 🚀
 
@@ -31,17 +31,32 @@ Instala las dependencias: En la carpeta raíz del proyecto, ejecuta:
 
 npm install
 
+
 Inicia el servidor de desarrollo: Ejecuta el siguiente comando para arrancar la aplicación en modo desarrollo:
 
 npm run dev
 Accede a la aplicación: Una vez que el servidor esté en funcionamiento, abre tu navegador y accede a:      http://localhost:5173/
 
 
-📦 Paquetes utilizados
-Axios: Para realizar solicitudes HTTP al backend.
-React Router: Para gestionar la navegación entre las diferentes páginas de la tienda.
-Node.js & Express: Para la creación del servidor backend y gestión de rutas API.
-SQL: Para almacenar los datos de productos y pedidos.
+Paquetes utilizados 📦
+Frontend:
+react: Biblioteca de JavaScript para construir interfaces de usuario.
+react-dom: Para interactuar con el DOM en React.
+react-router-dom: Para el manejo de rutas en React.
+axios: Para hacer solicitudes HTTP desde el frontend al backend.
+vite: Herramienta para la construcción del frontend con tiempos de recarga rápidos.
+sass: Para trabajar con estilos más estructurados.
+Backend:
+express: Framework para crear el servidor backend.
+jsonwebtoken: Para la autenticación de usuarios utilizando JWT.
+bcryptjs: Para el manejo seguro de contraseñas (encriptación).
+pg: Cliente de PostgreSQL para interactuar con la base de datos.
+sequelize: ORM para gestionar la base de datos con SQL.
+cors: Middleware para habilitar CORS en las rutas de la API.
+Desarrollo:
+nodemon: Para recargar automáticamente el servidor durante el desarrollo.
+eslint: Herramienta de linting para mantener el código limpio y consistente.
+concurrently: Para ejecutar varios comandos simultáneamente.
 
 🤝 Contribuciones
 Si deseas contribuir a este proyecto, ¡serás muy bienvenido! Solo haz un fork de este repositorio, crea una nueva rama, haz tus cambios y envía un pull request. 😊
