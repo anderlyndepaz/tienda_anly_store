@@ -1,4 +1,43 @@
 const Pedido = require('../models/Pedido');
+const Usuario = require('../models/Usuario');
+
+
+
+const createPedido = async (req, res) => {
+  try {
+    const userId = req.user?.id || req.userId;
+    if (!userId) {
+      return res.status(401).json({ error: 'Usuario no autenticado' });
+    }
+
+    // verificar que el usuario exista en la base de datos
+    const usuario = await Usuario.findByPk(userId);
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // obtener los datos del pedido desde el body
+    const { cantidad, cuenta_pagar } = req.body;
+    if (!cantidad || !cuenta_pagar) {
+      return res.status(400).json({ error: 'Cantidad y cuenta_pagar son obligatorios' });
+    }
+
+    // crear el pedido
+    const nuevoPedido = await Pedido.create({
+      cantidad,
+      cuenta_pagar,
+      id_users: userId, // Asociar el pedido al usuario autenticado
+    });
+
+    res.status(201).json({
+      message: 'Pedido creado exitosamente',
+      pedido: nuevoPedido,
+    });
+  } catch (error) {
+    console.error('Error al crear el pedido:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
 
 const getPedidos = async (req, res) => {
   try {
@@ -74,4 +113,5 @@ module.exports = {
   getPedidoById,
   updatePedido,
   deletePedido,
+  createPedido
 };

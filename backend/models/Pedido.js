@@ -3,7 +3,7 @@ const sequelize = require('../config/database');
 const Usuario = require('./Usuario'); 
 
 const Pedido = sequelize.define(
-  'Pedido',
+  'pedido',
   {
     id_pedido: {
       type: DataTypes.INTEGER,
@@ -26,7 +26,7 @@ const Pedido = sequelize.define(
       type: DataTypes.INTEGER,
       references: {
         model: Usuario,
-        key: 'ID_users',
+        key: 'id_users',
       },
       onDelete: 'CASCADE',
     },
@@ -40,4 +40,3 @@ const Pedido = sequelize.define(
 Pedido.belongsTo(Usuario, { foreignKey: 'id_users', onDelete: 'CASCADE' });
 
 module.exports = Pedido;
-
