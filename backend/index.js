@@ -24,6 +24,7 @@ app.use(cors({
 app.use(morgan('dev'));
 
 // Rutas
+app.use('/api/pedidos', pedidoRoutes); 
 app.use('/api/articulos', articulosRoutes); 
 app.post('/api/pedidos', (req, res) => {
   const pedido = req.body; 
