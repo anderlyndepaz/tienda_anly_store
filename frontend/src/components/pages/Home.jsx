@@ -87,9 +87,9 @@ const Home = () => {
       alert('Por favor, inicia sesion para añadir articulos')
       return;
     }
-    let cesta = JSON.parse(localStorage.getItem('cesta')) || [];
+    let cesta = JSON.parse(localStorage.getItem('cesta')) || []; //obtenemos del local cesta, si no, array vacio
     cesta.push(articulo);
-    localStorage.setItem('cesta', JSON.stringify(cesta));
+    localStorage.setItem('cesta', JSON.stringify(cesta)); //conertimos en cadena text y guardar
     setCartCount(cesta.length); // actualiza el contador en tiempo real
     console.log('Artículo añadido a la cesta:', articulo);
   };
@@ -98,7 +98,7 @@ const Home = () => {
   const filteredArticulos = articulos.filter((articulo) => {
     return (
       articulo.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      articulo.categoria.toLowerCase().includes(searchTerm.toLowerCase())
+      articulo.categoria.toLowerCase().includes(searchTerm.toLowerCase())  //buscamos y convertimos en minuscula 
     );
   });
 

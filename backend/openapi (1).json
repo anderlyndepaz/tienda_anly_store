@@ -1,0 +1,98 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "anlyStore",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/cesta": {
+      "get": {
+        "summary": "Get cesta",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/pedidos": {
+      "get": {
+        "summary": "Get pedidos",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/articulos": {
+      "post": {
+        "summary": "Add articulo",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string",
+                    "example": "Blusa de dama"
+                  },
+                  "categoria": {
+                    "type": "string",
+                    "example": "Blusa"
+                  },
+                  "precio": {
+                    "type": "number",
+                    "example": 22
+                  },
+                  "descripcion": {
+                    "type": "string",
+                    "example": "Blusa de dama"
+                  },
+                  "imagen": {
+                    "type": "string",
+                    "example": "https://ph-cdn3.ecosweb.com.br/imagens01/foto/moda-feminina/blusa-manga-curta/blusa-roxa-com-franzido-nos-ombros_360213_600_1.jpg"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Articulo added successfully"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get articulos",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/usuarios/1": {
+      "delete": {
+        "summary": "Delete usuario",
+        "responses": {
+          "200": {
+            "description": "Usuario deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/usuarios": {
+      "get": {
+        "summary": "Get usuarios",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    }
+  }
+}
