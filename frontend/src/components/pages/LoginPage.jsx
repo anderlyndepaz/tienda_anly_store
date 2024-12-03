@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom'; 
 import '../../../styles/Login.scss';
 
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true; //para asegurar que la cookie y token se envien con las solicitudes axios
 
 const LoginPage = () => {
     const [correo, setCorreo] = useState('');
@@ -25,11 +25,11 @@ const LoginPage = () => {
                 contraseña,
             });
     
-            // Guardar el token en localStorage
+            // guardar el token en localStorage
             const token = response.data.token;
             if (token) {
                 localStorage.setItem('token', token);
-                navigate('/'); // Navegar al home
+                navigate('/'); // navegar al home
             } else {
                 throw new Error('Token no recibido.');
             }
